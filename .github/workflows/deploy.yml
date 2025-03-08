@@ -1,0 +1,56 @@
+name: Deploy NestJS to aaPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Aplikasi
+        run: npm run build
+
+      - name: Copy files to aaPanel via SSH
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AAPANEL_HOST }}
+          username: ${{ secrets.AAPANEL_USER }}
+          password: ${{ secrets.AAPANEL_PASSWORD }}
+          source: "dist/*"
+          target: "/www/wwwroot/nestjs-app"
+
+      - name: Buat .env di server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.AAPANEL_HOST }}
+          username: ${{ secrets.AAPANEL_USER }}
+          password: ${{ secrets.AAPANEL_PASSWORD }}
+          script: |
+            cd /www/wwwroot/nestjs-app
+            echo -e "${{ secrets.ENV_VARS }}" > .env
+            cat .env  # Debugging, hapus jika sudah yakin aman
+
+      - name: Restart PM2 di server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.AAPANEL_HOST }}
+          username: ${{ secrets.AAPANEL_USER }}
+          password: ${{ secrets.AAPANEL_PASSWORD }}
+          script: |
+            cd /www/wwwroot/nestjs-app
+            npm install --production
+            pm2 restart all || pm2 start dist/main.js --name nestjs-app
