@@ -1,64 +1,49 @@
-name: Deploy NestJS to aaPanel
+name: Deploy NestJS App
 
 on:
   push:
     branches:
-      - main
+      - main  # Gantilah dengan branch yang digunakan untuk deploy
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout kode repository
-        uses: actions/checkout@v3
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build Aplikasi
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Build Project
         run: npm run build
 
-      - name: Debug SSH Connection
+      - name: Setup SSH Connection
         run: |
-          echo "${{ secrets.AAPANEL_SSH_KEY }}" > private_key
-          chmod 600 private_key
-          ssh -v -o StrictHostKeyChecking=no -i private_key -p 22 ${{ secrets.USER }}@${{ secrets.AAPANEL_HOST }} "echo sukses login"
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
 
-
-      - name: Copy files to aaPanel via SSH
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.AAPANEL_HOST }}
-          username: ${{ secrets.AAPANEL_USER }}
-          key: ${{ secrets.AAPANEL_SSH_KEY }}
-          port: 22
-          source: "dist/*"
-          target: "/www/wwwroot/k26"
-
-      - name: Buat .env di server
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.AAPANEL_HOST }}
-          username: ${{ secrets.AAPANEL_USER }}
-          password: ${{ secrets.AAPANEL_PASSWORD }}
-          script: |
-            cd /www/wwwroot/k26
-            echo -e "${{ secrets.ENV_VARS }}" > .env
-            cat .env  # Debugging, hapus jika sudah yakin aman
-
-      - name: Restart PM2 di server
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.AAPANEL_HOST }}
-          username: ${{ secrets.AAPANEL_USER }}
-          password: ${{ secrets.AAPANEL_PASSWORD }}
-          script: |
-            cd /www/wwwroot/k26
-            npm install --production
-            pm2 restart all || pm2 start dist/main.js --name nestjs-app
+      - name: Deploy to Server
+        run: |
+          ssh $SSH_USER@$SSH_HOST << 'EOF'
+            cd ~/nestjs-app
+            git pull origin main
+            docker build -t nestjs-app .
+            docker-compose down
+            docker-compose up -d
+          EOF
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
