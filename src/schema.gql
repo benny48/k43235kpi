@@ -1,0 +1,48 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Employee {
+  id: ID!
+  name: String!
+  job_title: String!
+  barcode: String!
+  trainer: [String!]!
+  magang: Boolean!
+}
+
+"""Trainer Entity"""
+type TrainerEntity {
+  """Unique Trainer ID"""
+  id: Int!
+
+  """Full Name of the Trainer"""
+  name: String!
+
+  """NIP (Nomor Induk Pegawai) of the Trainer"""
+  nip: String!
+
+  """Username for authentication"""
+  username: String!
+
+  """Password (hashed for security)"""
+  password: String!
+}
+
+type Query {
+  employees(magang: Boolean, trainerId: Float): [Employee!]!
+
+  """Get all trainers"""
+  trainers: [TrainerEntity!]!
+  validateTrainer(
+    """Trainer username"""
+    username: String!
+
+    """Trainer password"""
+    password: String!
+  ): TrainerEntity!
+}
+
+type Mutation {
+  createEmployee(name: String!, job_title: String!): Employee!
+}
