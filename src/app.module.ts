@@ -8,6 +8,7 @@ import { join } from 'path';
 import { TrainerModule } from './trainer/trainer.module';
 import { ConfigModule } from '@nestjs/config';
 import { OdooAuthService } from './odoo-auth/odoo-auth.service';
+import { KpiModule } from './kpi/kpi.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { OdooAuthService } from './odoo-auth/odoo-auth.service';
     }),
     EmployeeModule,
     TrainerModule,
+    KpiModule,
   ],
   controllers: [AppController],
   providers: [AppService, OdooAuthService],
