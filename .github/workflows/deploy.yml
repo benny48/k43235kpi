@@ -19,7 +19,7 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build Aplikasi
         run: npm run build
@@ -30,8 +30,8 @@ jobs:
           host: ${{ secrets.AAPANEL_HOST }}
           username: ${{ secrets.AAPANEL_USER }}
           password: ${{ secrets.AAPANEL_PASSWORD }}
-          source: "dist/*"
-          target: "/www/wwwroot/k26"
+          source: 'dist/*'
+          target: '/www/wwwroot/k26'
 
       - name: Buat .env di server
         uses: appleboy/ssh-action@v0.1.6
