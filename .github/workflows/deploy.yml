@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.AAPANEL_USER }}
           password: ${{ secrets.AAPANEL_PASSWORD }}
           source: "dist/*"
-          target: "/www/wwwroot/nestjs-app"
+          target: "/www/wwwroot/k26"
 
       - name: Buat .env di server
         uses: appleboy/ssh-action@v0.1.6
@@ -40,7 +40,7 @@ jobs:
           username: ${{ secrets.AAPANEL_USER }}
           password: ${{ secrets.AAPANEL_PASSWORD }}
           script: |
-            cd /www/wwwroot/nestjs-app
+            cd /www/wwwroot/k26
             echo -e "${{ secrets.ENV_VARS }}" > .env
             cat .env  # Debugging, hapus jika sudah yakin aman
 
@@ -51,6 +51,6 @@ jobs:
           username: ${{ secrets.AAPANEL_USER }}
           password: ${{ secrets.AAPANEL_PASSWORD }}
           script: |
-            cd /www/wwwroot/nestjs-app
+            cd /www/wwwroot/k26
             npm install --production
             pm2 restart all || pm2 start dist/main.js --name nestjs-app
