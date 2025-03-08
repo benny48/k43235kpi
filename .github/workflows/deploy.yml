@@ -24,6 +24,13 @@ jobs:
       - name: Build Aplikasi
         run: npm run build
 
+      - name: Debug SSH Connection
+        run: |
+          echo "${{ secrets.AAPANEL_SSH_KEY }}" > private_key
+          chmod 600 private_key
+          ssh -v -o StrictHostKeyChecking=no -i private_key -p 22 ${{ secrets.AAPANEL_USER }}@${{ secrets.AAPANEL_HOST }} "echo sukses login"
+
+
       - name: Copy files to aaPanel via SSH
         uses: appleboy/scp-action@v0.1.7
         with:
