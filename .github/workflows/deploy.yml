@@ -30,6 +30,7 @@ jobs:
           host: ${{ secrets.AAPANEL_HOST }}
           username: ${{ secrets.AAPANEL_USER }}
           password: ${{ secrets.AAPANEL_PASSWORD }}
+          port: 2202
           source: "dist/*"
           target: "/www/wwwroot/k26"
 
