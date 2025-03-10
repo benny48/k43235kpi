@@ -40,7 +40,7 @@ jobs:
           source: "dist/*,package.json,package-lock.json"
           target: "/www/wwwroot/nestjs-app"
 
-      - name: Install PM2 dan Node.js di server
+      - name: Install Node.js 20 dan PM2 di server
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -49,19 +49,29 @@ jobs:
           port: 22
           script: |
             source ~/.bashrc
-      
-            # Cek apakah Node.js sudah terinstall, jika belum install
-            if ! command -v node &> /dev/null; then
-              echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-              echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S apt install -y nodejs
+
+            # Cek apakah NVM tersedia
+            if [ -d "$HOME/.nvm" ]; then
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             fi
-      
-            # Cek apakah PM2 sudah terinstall, jika belum install
+
+            # Install NVM jika belum ada
+            if ! command -v nvm &> /dev/null; then
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            fi
+
+            # Install Node.js 20 jika belum ada
+            nvm install 20
+            nvm alias default 20
+            nvm use 20
+
+            # Cek dan install PM2 jika belum ada
             if ! command -v pm2 &> /dev/null; then
-              echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S npm install -g pm2
+              npm install -g pm2
             fi
-
-
 
       - name: Buat .env di server
         uses: appleboy/ssh-action@v0.1.6
@@ -75,7 +85,7 @@ jobs:
             echo -e "${{ secrets.ENV_VARS }}" > .env
             cat .env  # Debugging, hapus jika sudah yakin aman
 
-      - name: Restart PM2 di server
+      - name: Restart PM2 dengan Node.js 20
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -84,5 +94,16 @@ jobs:
           port: 22
           script: |
             cd /www/wwwroot/nestjs-app
+
+            # Pastikan NVM dan Node.js 20 digunakan
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 20
+
+            # Install dependensi produksi
             npm install --production --omit=dev --legacy-peer-deps
-            pm2 restart nestjs-app || pm2 start dist/main.js --name nestjs-app
+
+            # Restart PM2 menggunakan Node.js 20
+            pm2 delete nestjs-app || true
+            pm2 start dist/main.js --name nestjs-app --node-args="--max-old-space-size=512"
+            pm2 save
