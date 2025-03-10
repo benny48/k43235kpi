@@ -56,9 +56,10 @@ jobs:
       - name: Restart PM2 di server
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.AAPANEL_HOST }}
-          username: ${{ secrets.AAPANEL_USER }}
-          password: ${{ secrets.AAPANEL_PASSWORD }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.AAPANEL_SSH_KEY }}
+          port: 22
           script: |
             cd /www/wwwroot/nestjs-app
             npm install --production
