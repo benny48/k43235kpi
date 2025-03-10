@@ -33,11 +33,45 @@ jobs:
       - name: Copy files to aaPanel via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.AAPANEL_HOST }}
-          username: ${{ secrets.AAPANEL_USER }}
-          password: ${{ secrets.AAPANEL_PASSWORD }}
-          source: 'dist/*'
-          target: '/www/wwwroot/k26'
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.AAPANEL_SSH_KEY }}
+          port: 22
+          source: 'dist/*,package.json,package-lock.json'
+          target: '/www/wwwroot/nestjs-app'
+
+      - name: Install Node.js 20 dan PM2 di server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.AAPANEL_SSH_KEY }}
+          port: 22
+          script: |
+            source ~/.bashrc
+
+            # Cek apakah NVM tersedia
+            if [ -d "$HOME/.nvm" ]; then
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            fi
+
+            # Install NVM jika belum ada
+            if ! command -v nvm &> /dev/null; then
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            fi
+
+            # Install Node.js 20 jika belum ada
+            nvm install 20
+            nvm alias default 20
+            nvm use 20
+
+            # Cek dan install PM2 jika belum ada
+            if ! command -v pm2 &> /dev/null; then
+              npm install -g pm2
+            fi
 
       - name: Buat .env di server
         uses: appleboy/ssh-action@v0.1.6
@@ -59,6 +93,21 @@ jobs:
           key: ${{ secrets.AAPANEL_SSH_KEY }}
           port: 22
           script: |
-            cd /www/wwwroot/k26
-            npm install --production
-            pm2 restart all || pm2 start dist/main.js --name nestjs-app
+            cd /www/wwwroot/nestjs-app
+
+            # Pastikan NVM dan Node.js 20 digunakan
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 20
+
+            # Install dependensi produksi
+            npm install --omit=dev --legacy-peer-deps
+
+            # Hapus aplikasi jika sudah ada
+            pm2 delete nestjs-app || true
+
+            # Start ulang dengan interpreter Node.js yang benar
+            pm2 start dist/main.js --name nestjs-app --interpreter $(which node) --node-args="--max-old-space-size=512"
+
+            # Simpan konfigurasi
+            pm2 save
