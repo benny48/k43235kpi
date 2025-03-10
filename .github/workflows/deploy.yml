@@ -22,7 +22,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Build Aplikasi
-        run: npm run build
+        run: npm run build 
 
       - name: Coba SSH Manual
         run: |
@@ -39,6 +39,7 @@ jobs:
           port: 22
           source: 'dist/*,package.json,package-lock.json'
           target: '/www/wwwroot/nestjs-app'
+
 
       - name: Install Node.js 20 dan PM2 di server
         uses: appleboy/ssh-action@v0.1.6
@@ -94,7 +95,7 @@ jobs:
           port: 22
           script: |
             cd /www/wwwroot/nestjs-app
-
+            
             # Pastikan NVM dan Node.js 20 digunakan
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
