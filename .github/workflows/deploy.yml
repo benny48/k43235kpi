@@ -22,7 +22,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Build Aplikasi
-        run: npm run build
+        run: npm run build 
 
       - name: Coba SSH Manual
         run: |
@@ -49,8 +49,18 @@ jobs:
           port: 22
           script: |
             source ~/.bashrc
-            which node || echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S apt install -y nodejs
-            which pm2 || echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S npm install -g pm2
+      
+            # Cek apakah Node.js sudah terinstall, jika belum install
+            if ! command -v node &> /dev/null; then
+              echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S apt install -y nodejs
+            fi
+      
+            # Cek apakah PM2 sudah terinstall, jika belum install
+            if ! command -v pm2 &> /dev/null; then
+              echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S npm install -g pm2
+            fi
+
 
 
       - name: Buat .env di server
