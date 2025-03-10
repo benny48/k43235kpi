@@ -37,8 +37,9 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.AAPANEL_SSH_KEY }}
           port: 22
-          source: "dist/*,package.json,package-lock.json"
-          target: "/www/wwwroot/nestjs-app"
+          source: 'dist/*,package.json,package-lock.json'
+          target: '/www/wwwroot/nestjs-app'
+
 
       - name: Install Node.js 20 dan PM2 di server
         uses: appleboy/ssh-action@v0.1.6
