@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type KPI {
+  schedule: String!
+  avr: Float!
+}
+
 type Employee {
   id: ID!
   name: String!
@@ -9,6 +14,7 @@ type Employee {
   barcode: String!
   trainer: [String!]!
   magang: Boolean!
+  kpi_id: [KPI!]!
 }
 
 """Trainer Entity"""
