@@ -18,8 +18,8 @@ export class EmployeeResolver {
   @Mutation(() => Employee)
   async createEmployee(
     @Args('name') name: string,
-    @Args('job_title') job_title: string,
+    @Args('position') position: string,
   ) {
-    return this.employeeService.createEmployee(name, job_title);
+    return this.employeeService.createEmployee(name, position);
   }
 }
