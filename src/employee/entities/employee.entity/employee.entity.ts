@@ -16,4 +16,7 @@ export class EmployeeEntity {
 
   @Field(() => Boolean)
   magang: boolean;
+
+  @Field(() => [String])
+  kpi_id: string[];
 }
