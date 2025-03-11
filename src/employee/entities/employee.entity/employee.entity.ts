@@ -9,7 +9,7 @@ export class EmployeeEntity {
   name: string;
 
   @Field()
-  jobTitle: string;
+  position: string;
 
   @Field()
   trainer: string;

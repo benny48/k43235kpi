@@ -5,7 +5,7 @@
 type Employee {
   id: ID!
   name: String!
-  job_title: String!
+  position: String!
   barcode: String!
   trainer: [String!]!
   magang: Boolean!
@@ -44,5 +44,5 @@ type Query {
 }
 
 type Mutation {
-  createEmployee(name: String!, job_title: String!): Employee!
+  createEmployee(name: String!, position: String!): Employee!
 }

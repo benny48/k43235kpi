@@ -9,7 +9,7 @@ export class Employee {
   name: string;
 
   @Field()
-  job_title: string;
+  position: string;
 
   @Field()
   barcode: string;

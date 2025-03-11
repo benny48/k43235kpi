@@ -32,7 +32,7 @@ export class EmployeeService {
           'search_read',
           [domain], // Gunakan filter yang sudah dibuat
           {
-            fields: ['id', 'name', 'job_title', 'barcode', 'trainer', 'magang'],
+            fields: ['id', 'name', 'position', 'barcode', 'trainer', 'magang'],
           },
         ],
       },
@@ -41,7 +41,7 @@ export class EmployeeService {
     return response.data.result;
   }
 
-  async createEmployee(name: string, job_title: string): Promise<any> {
+  async createEmployee(name: string, position: string): Promise<any> {
     const uid = await this.odooAuthService.authenticate();
     if (!uid) throw new Error('Gagal autentikasi ke Odoo');
 
@@ -58,12 +58,12 @@ export class EmployeeService {
           process.env.ODOO_PASSWORD,
           'hr.employee',
           'create',
-          [{ name, job_title }],
+          [{ name, position }],
         ],
       },
     });
 
     const newEmployeeId = response.data.result;
-    return { id: newEmployeeId, name, job_title };
+    return { id: newEmployeeId, name, position };
   }
 }
