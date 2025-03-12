@@ -32,7 +32,15 @@ export class EmployeeService {
           'search_read',
           [domain], // Gunakan filter yang sudah dibuat
           {
-            fields: ['id', 'name', 'position', 'trainer', 'magang', 'kpi_id'],
+            fields: [
+              'id',
+              'name',
+              'position',
+              'trainer',
+              'magang',
+              'kpi_id',
+              'avatar_128',
+            ],
           },
         ],
       },

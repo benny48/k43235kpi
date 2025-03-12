@@ -15,6 +15,7 @@ type Employee {
   trainer: [String!]!
   magang: Boolean!
   kpi_id: [KPI!]!
+  avatar_128: String
 }
 
 """Trainer Entity"""
@@ -35,6 +36,22 @@ type TrainerEntity {
   password: String!
 }
 
+type KpiEntity {
+  id: Int!
+  name: [String!]!
+  schedule: String!
+  pkk: Int!
+  kk: Int!
+  dwpp: Int!
+  kkdp: Int!
+  ikdp: Int!
+  kehadiran: Int!
+  tjpd: Int!
+  kkk: Int!
+  avr: Int!
+  grade: String!
+}
+
 type Query {
   employees(magang: Boolean, trainerId: Float): [Employee!]!
 
@@ -47,8 +64,25 @@ type Query {
     """Trainer password"""
     password: String!
   ): TrainerEntity!
+  getKPIByEmployee(employeeId: Float!): [KpiEntity!]!
 }
 
 type Mutation {
   createEmployee(name: String!, position: String!): Employee!
+  createKPI(input: CreateKPIInput!): Boolean!
+}
+
+input CreateKPIInput {
+  employeeId: Int!
+  schedule: String!
+  pkk: Int!
+  kk: Int!
+  dwpp: Int!
+  kkdp: Int!
+  ikdp: Int!
+  kehadiran: Int!
+  tjpd: Int!
+  kkk: Int!
+  avr: Int!
+  grade: String!
 }
