@@ -31,4 +31,7 @@ export class Employee {
 
   @Field(() => [KPI]) // Perubahan di sini
   kpi_id: KPI[]; // Ubah menjadi array KPI, bukan String[]
+
+  @Field(() => String, { nullable: true })
+  avatar_128: string;
 }
