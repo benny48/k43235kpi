@@ -48,7 +48,17 @@ export class KpiService {
       },
     });
 
-    return response.data.result;
+    // Ubah format tanggal pada `create_date`
+    return response.data.result.map((item: any) => ({
+      ...item,
+      create_date: item.create_date
+        ? new Date(item.create_date).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          })
+        : null,
+    }));
   }
 
   async createKPI(input: CreateKPIInput): Promise<boolean> {
