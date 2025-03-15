@@ -41,6 +41,7 @@ export class KpiService {
               'kkk',
               'avr',
               'grade',
+              'create_date',
             ],
           },
         ],
