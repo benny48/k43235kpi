@@ -31,10 +31,4 @@ export class CreateKPIInput {
 
   @Field(() => Int)
   kkk: number;
-
-  @Field(() => Int)
-  avr: number;
-
-  @Field()
-  grade: string;
 }

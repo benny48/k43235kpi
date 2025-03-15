@@ -80,8 +80,6 @@ export class KpiService {
               kehadiran: input.kehadiran,
               tjpd: input.tjpd,
               kkk: input.kkk,
-              avr: input.avr,
-              grade: input.grade,
             },
           ],
         ],
