@@ -67,7 +67,7 @@ export class EmployeeService {
             'ssm.kpi',
             'search_read',
             [[['id', 'in', kpiIds]]], // Ambil KPI berdasarkan ID
-            { fields: ['id', 'name', 'schedule', 'avr'] },
+            { fields: ['id', 'name', 'schedule', 'avr', 'create_date'] },
           ],
         },
       });
@@ -87,6 +87,7 @@ export class EmployeeService {
         .map((kpi) => ({
           schedule: kpi.schedule,
           avr: kpi.avr,
+          create_date: kpi.create_date,
         })), // Tetap dalam bentuk array
     }));
 

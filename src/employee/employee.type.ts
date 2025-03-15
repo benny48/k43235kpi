@@ -8,8 +8,8 @@ export class KPI {
   @Field()
   avr: number;
 
-  @Field()
-  create_date: string;
+  @Field({ nullable: true })
+  create_date?: string;
 }
 
 @ObjectType()

@@ -5,6 +5,7 @@
 type KPI {
   schedule: String!
   avr: Float!
+  create_date: String
 }
 
 type Employee {
