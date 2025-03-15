@@ -12,6 +12,11 @@ export class KPIResolver {
     return this.kpiService.getEmployeeKPI(employeeId);
   }
 
+  @Query(() => [KpiEntity])
+  async getKPIById(@Args('kpiId') id: number) {
+    return this.kpiService.getKPIById(id);
+  }
+
   @Mutation(() => Boolean)
   async createKPI(@Args('input') input: CreateKPIInput) {
     return this.kpiService.createKPI(input);

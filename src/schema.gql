@@ -67,6 +67,7 @@ type Query {
     password: String!
   ): TrainerEntity!
   getKPIByEmployee(employeeId: Float!): [KpiEntity!]!
+  getKPIById(kpiId: Float!): [KpiEntity!]!
 }
 
 type Mutation {
@@ -85,6 +86,4 @@ input CreateKPIInput {
   kehadiran: Int!
   tjpd: Int!
   kkk: Int!
-  avr: Int!
-  grade: String!
 }
