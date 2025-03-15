@@ -7,6 +7,9 @@ export class KPI {
 
   @Field()
   avr: number;
+
+  @Field()
+  create_date: string;
 }
 
 @ObjectType()
