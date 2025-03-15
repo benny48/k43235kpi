@@ -40,4 +40,7 @@ export class KpiEntity {
 
   @Field()
   grade: string;
+
+  @Field()
+  create_date: string;
 }

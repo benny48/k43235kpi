@@ -50,6 +50,7 @@ type KpiEntity {
   kkk: Int!
   avr: Int!
   grade: String!
+  create_date: String!
 }
 
 type Query {
