@@ -87,7 +87,11 @@ export class EmployeeService {
         .map((kpi) => ({
           schedule: kpi.schedule,
           avr: kpi.avr,
-          create_date: kpi.create_date,
+          create_date: new Date(kpi.create_date).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          }),
         })), // Tetap dalam bentuk array
     }));
 
