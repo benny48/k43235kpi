@@ -61,6 +61,58 @@ export class KpiService {
     }));
   }
 
+  async getKPIById(kpiId: number): Promise<any[]> {
+    const uid = await this.odooAuthService.authenticate();
+    if (!uid) throw new Error('Gagal autentikasi ke Odoo');
+
+    const response = await axios.post(this.odooUrl, {
+      jsonrpc: '2.0',
+      method: 'call',
+      id: new Date().getTime(),
+      params: {
+        service: 'object',
+        method: 'execute_kw',
+        args: [
+          process.env.ODOO_DB,
+          uid,
+          process.env.ODOO_PASSWORD,
+          'ssm.kpi',
+          'search_read',
+          [[['id', '=', kpiId]]], // Filter berdasarkan ID Employee
+          {
+            fields: [
+              'name',
+              'schedule',
+              'pkk',
+              'kk',
+              'dwpp',
+              'kkdp',
+              'ikdp',
+              'kehadiran',
+              'tjpd',
+              'kkk',
+              'avr',
+              'grade',
+              'create_date',
+            ],
+          },
+        ],
+      },
+    });
+
+    // Ubah format tanggal pada `create_date`
+    return response.data.result.map((item: any) => ({
+      ...item,
+      create_date: item.create_date
+        ? new Date(item.create_date).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          })
+        : null,
+    }));
+  }
+
   async createKPI(input: CreateKPIInput): Promise<boolean> {
     const uid = await this.odooAuthService.authenticate();
     if (!uid) throw new Error('Gagal autentikasi ke Odoo');
