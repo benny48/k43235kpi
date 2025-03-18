@@ -54,6 +54,18 @@ type KpiEntity {
   create_date: String!
 }
 
+type KpiSummaryEntity {
+  employee_id: [String!]!
+  minggu_1: Int
+  minggu_3: Int
+  minggu_5: Int
+  minggu_7: Int
+  minggu_9: Int
+  minggu_11: Int
+  avg_score: Float!
+  grade: String!
+}
+
 type Query {
   employees(magang: Boolean, trainerId: Float): [Employee!]!
 
@@ -68,6 +80,7 @@ type Query {
   ): TrainerEntity!
   getKPIByEmployee(employeeId: Float!): [KpiEntity!]!
   getKPIById(kpiId: Float!): [KpiEntity!]!
+  getKpiSummary(employeeId: Int!): KpiSummaryEntity!
 }
 
 type Mutation {
