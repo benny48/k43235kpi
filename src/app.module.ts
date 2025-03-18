@@ -9,6 +9,7 @@ import { TrainerModule } from './trainer/trainer.module';
 import { ConfigModule } from '@nestjs/config';
 import { OdooAuthService } from './odoo-auth/odoo-auth.service';
 import { KpiModule } from './kpi/kpi.module';
+import { KpiSummaryModule } from './kpi-summary/kpi-summary.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { KpiModule } from './kpi/kpi.module';
     EmployeeModule,
     TrainerModule,
     KpiModule,
+    KpiSummaryModule,
   ],
   controllers: [AppController],
   providers: [AppService, OdooAuthService],
