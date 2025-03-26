@@ -32,7 +32,7 @@ export class Employee {
   @Field(() => Boolean)
   magang: boolean;
 
-  @Field(() => [KPI]) // ini test hhhahah
+  @Field(() => [KPI]) // ini
   kpi_id: KPI[]; // Ubah menjadi array KPI, bukan String[]
 
   @Field(() => String, { nullable: true })
